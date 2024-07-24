@@ -1,22 +1,24 @@
 #!/usr/bin/python3
-""" Get the titles of the first 10 hot posts for a given subreddit."""
+"""
+Module to fetch and print the titles of the first 10 hot posts
+from a given subreddit using the Reddit API.
+"""
+
 import requests
 
 
 def top_ten(subreddit):
-
-    headers = {'User-Agent': 'MyAPI/0.0.1'}
-    subreddit_url = "https://reddit.com/r/{}.json".format(subreddit)
-    response = requests.get(subreddit_url, headers=headers)
+    """
+    Queries the Reddit API and prints the titles of the first
+    10 hot posts for a given subreddit.
+    """
+    url = f"https://www.reddit.com/r/{subreddit}/hot.json"
+    headers = {'User-Agent': 'my-reddit-app'}
+    response = requests.get(url, headers=headers, allow_redirects=False)
 
     if response.status_code == 200:
-        json_data = response.json()
-        for i in range(10):
-            print(
-                json_data.get('data')
-                .get('children')[i]
-                .get('data')
-                .get('title')
-            )
+        data = response.json().get('data', {}).get('children', [])
+        for post in data[:10]:
+            print(post['data']['title'])
     else:
         print(None)
